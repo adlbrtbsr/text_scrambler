@@ -1,9 +1,9 @@
 import random
-import re
+import regex as re
 from typing import Optional
 
 
-WORD_REGEX = re.compile(r"[A-Za-z]+")
+WORD_REGEX = re.compile(r"(?:\p{L}\p{M}*)+")
 
 
 def scramble_word(word: str, rng: random.Random) -> str:
