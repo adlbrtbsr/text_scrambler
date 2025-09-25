@@ -16,8 +16,8 @@ Scramble the interior letters of words in an uploaded `.txt` file while preservi
 
 ### Quickstart
 ```bash
-# Clone and enter the project directory
-cd /home/adlbrtbsr/Projects/text_scrambler
+# Enter the project directory
+cd text_scrambler
 
 # Create & activate a virtual environment
 python -m venv .venv
