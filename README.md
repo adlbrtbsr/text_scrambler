@@ -70,8 +70,7 @@ The app reads configuration from environment variables (see `config/settings.py`
 Required/important variables:
 - `DJANGO_SECRET_KEY`: a long random string. Use a dedicated value in production.
 - `DEBUG`: `True` or `False` (default `True`). Set `False` in production.
-- `ALLOWED_HOSTS`: comma-separated hostnames (e.g., `example.com,www.example.com`). Required when `DEBUG=False`.
- - `ALLOWED_HOSTS`: comma-separated hostnames (e.g., `example.com,www.example.com`). When `DEBUG=False`, defaults to `*` if unset (Docker/Makefile also default to `*`). Override with your real domains in production.
+- `ALLOWED_HOSTS`: comma-separated hostnames (e.g., `example.com,www.example.com`). When `DEBUG=False`, defaults to `*` if unset (Docker/Makefile also default to `*`). Override with your real domains in production.
 - `CSRF_TRUSTED_ORIGINS`: comma-separated origins (scheme + host), e.g., `https://example.com,https://www.example.com`.
 - `DATABASE_URL`: database connection URL. Defaults to local SQLite if not set. Example for Postgres: `postgres://USER:PASS@HOST:5432/DBNAME`.
 - `CONN_MAX_AGE`: persistent DB connections in seconds (default `60`).
