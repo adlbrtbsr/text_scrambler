@@ -1,2 +1,5 @@
 Django>=4.2,<6.0
 regex>=2024.5.15
+whitenoise>=6.6.0
+dj-database-url>=2.2.0
+sentry-sdk>=2.8.0
