@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Text Scrambler</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji"; margin: 0; background: #f6f7fb; color: #222; }
+    .container { max-width: 800px; margin: 40px auto; padding: 24px; background: #fff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.08); }
+    header { margin-bottom: 16px; }
+    h1 { font-size: 24px; margin: 0; }
+    .messages { margin: 12px 0; }
+    .message { background: #eef6ff; border: 1px solid #cfe1ff; color: #1e3a8a; padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; }
+    footer { margin-top: 24px; color: #555; font-size: 14px; }
+    a { color: #2563eb; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    button, .btn { background: #2563eb; color: #fff; border: none; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    button:hover, .btn:hover { background: #1d4ed8; }
+    input[type="file"] { display: block; margin: 8px 0 12px; }
+    pre { background: #0b1020; color: #e6edf3; padding: 16px; border-radius: 8px; overflow: auto; }
+    .hint { color: #666; font-size: 14px; }
+  </style>
+  {% load static %}
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Text Scrambler</h1>
+    </header>
+
+    <div class="messages">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="message">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    {% block content %}{% endblock %}
+
+    <footer>
+      <p><a href="{% url 'upload' %}">Upload another file</a></p>
+    </footer>
+  </div>
+</body>
+</html>
+
+

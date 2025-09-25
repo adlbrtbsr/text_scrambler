@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>Scrambled Result</h2>
+  <pre>{{ scrambled_text }}</pre>
+  <p><a class="btn" href="{% url 'upload' %}">Upload another file</a></p>
+{% endblock %}
+
+
