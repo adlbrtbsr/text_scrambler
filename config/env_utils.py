@@ -1,9 +1,12 @@
 import os
+import logging
 from typing import List, Optional
 
 
 _TRUTHY = {"1", "true", "yes", "on"}
 _FALSY = {"0", "false", "no", "off"}
+
+logger = logging.getLogger(__name__)
 
 
 def get_str(name: str, default: Optional[str] = None) -> Optional[str]:
@@ -29,6 +32,9 @@ def get_int(name: str, default: int = 0) -> int:
     try:
         return int(raw)
     except (TypeError, ValueError):
+        logger.error(
+            "Invalid int for env var %s=%r; using default %s", name, raw, default, exc_info=True
+        )
         return default
 
 

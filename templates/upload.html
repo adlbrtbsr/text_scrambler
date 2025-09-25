@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-  <p class="hint">Upload a .txt file (max 1 MB). We'll scramble interior letters of words while preserving punctuation and spacing.</p>
+  <p class="hint">Upload a .txt file. We'll scramble interior letters of words while preserving punctuation and spacing.</p>
 
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
