@@ -26,7 +26,7 @@ run: stop
 	docker run -d --name $(PROJECT_NAME) \
 	  -p $(PORT):8000 \
 	  -e DJANGO_SETTINGS_MODULE=config.settings \
-	  -e SECRET_KEY=$${SECRET_KEY:-dev-insecure-key} \
+		  -e DJANGO_SECRET_KEY=$${DJANGO_SECRET_KEY:-dev-insecure-key} \
 	  -e DEBUG=$${DEBUG:-True} \
 	  -e ALLOWED_HOSTS=$${ALLOWED_HOSTS:-*} \
 	  -e DATABASE_URL=$${DATABASE_URL:-sqlite:////app/db.sqlite3} \
@@ -48,7 +48,7 @@ ps:
 test: build stop
 	docker run --rm --name $(PROJECT_NAME)-test \
 	  -e DJANGO_SETTINGS_MODULE=config.settings \
-	  -e SECRET_KEY=$${SECRET_KEY:-dev-insecure-key} \
+		  -e DJANGO_SECRET_KEY=$${DJANGO_SECRET_KEY:-dev-insecure-key} \
 	  -e DEBUG=True \
 	  -e DATABASE_URL=sqlite:////app/db.sqlite3 \
 	  $(IMAGE) sh -c "python manage.py test -v 2"

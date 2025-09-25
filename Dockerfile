@@ -37,7 +37,7 @@ EXPOSE 8000
 # Default envs for convenience (override in runtime)
 ENV PORT=8000 \
     DJANGO_SETTINGS_MODULE=config.settings \
-    SECRET_KEY=dev-insecure-key \
+    DJANGO_SECRET_KEY=dev-insecure-key \
     DEBUG=True \
     ALLOWED_HOSTS=*
 

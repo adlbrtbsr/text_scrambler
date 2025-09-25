@@ -14,9 +14,7 @@ Scramble the interior letters of words in an uploaded `.txt` file while preservi
 - ASGI app (`config.asgi`); recommended: Gunicorn + Uvicorn worker
 - Static files via WhiteNoise (manifest, compressed)
 - SQLite by default; Postgres via `DATABASE_URL` (using `dj-database-url`)
-- Environment helpers in `config/env_utils.py`
 - App: `scrambler`
-- Session storage only (no database models)
 
 ### Quickstart
 ```bash
@@ -60,7 +58,7 @@ make test
 make shell
 ```
 
-Environment variables honored by the container: `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`, `DATABASE_URL`.
+Environment variables honored by the container: `DJANGO_SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`, `DATABASE_URL`.
 
 - Default database is SQLite at `/app/db.sqlite3` inside the container. Override with `DATABASE_URL` for Postgres.
 - Static files are collected during build; migrations run automatically on container start.
@@ -70,9 +68,10 @@ Environment variables honored by the container: `SECRET_KEY`, `DEBUG`, `ALLOWED_
 The app reads configuration from environment variables (see `config/settings.py`). For local development you can export them in your shell or use a `.env` loader of your choice.
 
 Required/important variables:
-- `SECRET_KEY`: a long random string. Use a dedicated value in production.
+- `DJANGO_SECRET_KEY`: a long random string. Use a dedicated value in production.
 - `DEBUG`: `True` or `False` (default `True`). Set `False` in production.
 - `ALLOWED_HOSTS`: comma-separated hostnames (e.g., `example.com,www.example.com`). Required when `DEBUG=False`.
+ - `ALLOWED_HOSTS`: comma-separated hostnames (e.g., `example.com,www.example.com`). When `DEBUG=False`, defaults to `*` if unset (Docker/Makefile also default to `*`). Override with your real domains in production.
 - `CSRF_TRUSTED_ORIGINS`: comma-separated origins (scheme + host), e.g., `https://example.com,https://www.example.com`.
 - `DATABASE_URL`: database connection URL. Defaults to local SQLite if not set. Example for Postgres: `postgres://USER:PASS@HOST:5432/DBNAME`.
 - `CONN_MAX_AGE`: persistent DB connections in seconds (default `60`).
@@ -81,7 +80,7 @@ Required/important variables:
 
 Example `.env` (do not commit real secrets):
 ```bash
-SECRET_KEY=change-me
+DJANGO_SECRET_KEY=change-me
 DEBUG=False
 ALLOWED_HOSTS=your.domain.com
 CSRF_TRUSTED_ORIGINS=https://your.domain.com
@@ -111,7 +110,7 @@ GET /health  ->  {"status": "ok"}
 
 ### How It Works
 - Upload handled in `scrambler/views.py` (`upload_view`)
-- Text is read server-side, decoded as UTF‑8 (with replacement on errors)
+- Text is read server-side, decoded as UTF‑8 (BOM-safe) with replacement on errors, then normalized to NFC
 - Scrambling is performed by `scrambler/utils.py`:
   - `scramble_word(word, rng)`: preserves first/last letters, shuffles interior
   - `scramble_text(text, rng=None)`: scrambles only tokens matching `(?:\p{L}\p{M}*)+` (Unicode letters)
@@ -122,7 +121,7 @@ GET /health  ->  {"status": "ok"}
   - Non-letter characters (digits, punctuation, symbols) are left unchanged
 - **Hyphenated words**: each alphabetic segment between punctuation is scrambled separately; hyphens are preserved
 - **Length rule**: words with fewer than 4 characters are left unchanged
-- **Size limit**: `MAX_UPLOAD_SIZE = 1_000_000` bytes (set in `config/settings.py`)
+- **Size limit**: `MAX_UPLOAD_SIZE = 1_000,000` bytes (set in `config/settings.py`)
   - To change the upload size limit, update `MAX_UPLOAD_SIZE` in `config/settings.py` (value is in bytes). Validation uses this setting in `scrambler/forms.py`.
 - **MIME check**: rejects non-`text/plain` uploads when a content type is provided by the client
 
@@ -131,6 +130,7 @@ GET /health  ->  {"status": "ok"}
 - `/` (POST): handle upload, process, and redirect
 - `/result/` (GET): show scrambled text from session
 - `/health` (GET): JSON health check `{ "status": "ok" }`
+- `/admin/` (GET): Django admin
 
 ### Project Structure (key files)
 ```
@@ -163,7 +163,8 @@ python manage.py test -v 2
 Tests live in `scrambler/tests/` and cover utilities and upload/result flow.
 
 ### Development Notes
-- Requirements in `requirements.txt` (includes Django, `regex`, `whitenoise`, `dj-database-url`)
+- Requirements in `requirements.txt` (includes Django, `regex`, `whitenoise`, `dj-database-url`, `sentry-sdk`)
+- Sentry SDK is present in dependencies but not configured by default; integrate if you need error monitoring
 - Static files are served from `static/` in dev; in prod, collected to `staticfiles/` and served by WhiteNoise
 - Recommended production run: ASGI via Gunicorn + Uvicorn worker
 - No database models required for MVP (SQLite default; Postgres supported via `DATABASE_URL`)
