@@ -53,3 +53,6 @@ htmlcov/
 
 # Misc
 .DS_Store
+ 
+# SQLite dev database
+db.sqlite3
